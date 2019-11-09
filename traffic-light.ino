@@ -31,7 +31,7 @@ const byte modes[16][15] =
               {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 7
               {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 8  - OFF
               {0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001}, // Mode 9  - Steady Green
-              {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 10 - OVERRIDDEN!
+              {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 10
               {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 11
               {0b001, 0b000, 0b001, 0b000, 0b001, 0b000, 0b001, 0b000, 0b001, 0b000, 0b001, 0b000, 0b001, 0b000}, // Mode 12 - Green Flash
               {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 13
@@ -66,7 +66,7 @@ void loop()
     digitalWrite(pinRadioPwr, HIGH);
     int a = ActiveMode();
     byte v = modes[a][lastStep];
-    if(lastStep==10) v = RaveMode();
+    if(a==10) v = RaveMode();
     Serial.print(a);
     Serial.print("-");
     Serial.print(lastStep);
