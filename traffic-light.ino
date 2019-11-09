@@ -97,7 +97,6 @@ int ActiveMode()
       Serial.print("\n");
       changeLights(0b000);
       lastStep = 0;
-      digitalWrite(pinHeart, HIGH);
       delay(2000);
     }
     return lastMode;
