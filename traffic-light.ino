@@ -19,11 +19,11 @@ int lastMode = 8;
 int lastStep = 0;
 const int maxStep = 14;
 // RYG
-const byte modes[16][14] =
+const byte modes[16][15] =
             {
               {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Never used
               {0b001, 0b001, 0b001, 0b001, 0b001, 0b010, 0b010, 0b010, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100}, // Mode 1  - Normal
-              {0b001, 0b001, 0b001, 0b001, 0b001, 0b010, 0b010, 0b100, 0b100, 0b100, 0b100, 0b100, 0b010, 0b010}, // Mode 2  - Reverse
+              {0b001, 0b001, 0b001, 0b001, 0b001, 0b010, 0b010, 0b100, 0b100, 0b100, 0b100, 0b100, 0b010, 0b010}, // Mode 2  - Europe
               {0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100}, // Mode 3  - Steady Red
               {0b001, 0b011, 0b111, 0b110, 0b100, 0b000, 0b100, 0b110, 0b111, 0b011, 0b001, 0b000, 0b000, 0b000}, // Mode 4  - Cascade
               {0b010, 0b000, 0b010, 0b000, 0b010, 0b000, 0b010, 0b000, 0b010, 0b000, 0b010, 0b000, 0b010, 0b000}, // Mode 5  - Yellow Flash
@@ -31,11 +31,12 @@ const byte modes[16][14] =
               {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 7
               {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 8  - OFF
               {0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001}, // Mode 9  - Steady Green
-              {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 10
+              {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 10 - OVERRIDDEN!
               {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 11
               {0b001, 0b000, 0b001, 0b000, 0b001, 0b000, 0b001, 0b000, 0b001, 0b000, 0b001, 0b000, 0b001, 0b000}, // Mode 12 - Green Flash
               {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 13
-              {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}  // Mode 14
+              {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 14
+              {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}  // Mode 15
               
             };
 void setup()
@@ -65,7 +66,7 @@ void loop()
     digitalWrite(pinRadioPwr, HIGH);
     int a = ActiveMode();
     byte v = modes[a][lastStep];
-    
+    if(lastStep==10) v = RaveMode();
     Serial.print(a);
     Serial.print("-");
     Serial.print(lastStep);
@@ -79,6 +80,15 @@ void loop()
     if(lastStep==maxStep) lastStep=0;
     
     delay(1000);
+}
+
+byte RaveMode()
+{
+  byte v = 0b000;
+  bitWrite(v,0,random(1));
+  bitWrite(v,1,random(1));
+  bitWrite(v,2,random(1));
+  return v;
 }
 
 int ActiveMode()
@@ -97,6 +107,7 @@ int ActiveMode()
       Serial.print("\n");
       changeLights(0b000);
       lastStep = 0;
+      digitalWrite(pinHeart, HIGH);
       delay(2000);
     }
     return lastMode;
