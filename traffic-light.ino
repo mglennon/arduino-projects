@@ -1,27 +1,24 @@
-/*
-
-*/
-
+// Setup PINS for RF
 const int pinRadioPwr = 13;
 const int pinRadio0 = 12;
 const int pinRadio1 = 11;
 const int pinRadio2 = 10;
 const int pinRadio3 = 9;
 const int pinRadioA = 8;
-
+// Setup PINS for relay module
 const int pinRelayR = 7;
 const int pinRelayY = 6;
 const int pinRelayG = 5;
-
+// Setup PIN for heartbeat LED
 const int pinHeart = 4;
-
+// Init last vars to track state
 int lastMode = 8;
 int lastStep = 0;
+// Configure programs
 const int maxStep = 14;
-// RYG
 const byte modes[16][15] =
             {
-              {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Never used
+              {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},                                                                     // Mode 0 - Never used
               {0b001, 0b001, 0b001, 0b001, 0b001, 0b010, 0b010, 0b010, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100}, // Mode 1  - Normal
               {0b001, 0b001, 0b001, 0b001, 0b001, 0b010, 0b010, 0b100, 0b100, 0b100, 0b100, 0b100, 0b010, 0b010}, // Mode 2  - Europe
               {0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100, 0b100}, // Mode 3  - Steady Red
@@ -31,7 +28,7 @@ const byte modes[16][15] =
               {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 7
               {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 8  - OFF
               {0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001, 0b001}, // Mode 9  - Steady Green
-              {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 10 - OVERRIDDEN!
+              {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 10 - OVERRIDDEN (Rave)
               {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 11
               {0b001, 0b000, 0b001, 0b000, 0b001, 0b000, 0b001, 0b000, 0b001, 0b000, 0b001, 0b000, 0b001, 0b000}, // Mode 12 - Green Flash
               {0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000}, // Mode 13
@@ -41,7 +38,7 @@ const byte modes[16][15] =
             };
 void setup()
 {
-    delay(5000);
+    delay(2000);
     Serial.begin(9600);
     Serial.print("Hello world!\n");
     pinMode(pinRadioPwr,OUTPUT);
@@ -71,7 +68,6 @@ void loop()
     Serial.print("-");
     Serial.print(lastStep);
     Serial.print(": ");
-    //Serial.print("\n");
     
     changeLights(v);
     int flip = lastStep % 2;
@@ -102,12 +98,11 @@ int ActiveMode()
     {
       lastMode = (p0*8)+(p1*4)+(p2*2)+(p3*1);
       digitalWrite(pinRadioPwr, LOW);
-      Serial.print("Chaging Mode: ");
+      Serial.print("Changing Mode: ");
       Serial.print(lastMode);
       Serial.print("\n");
       changeLights(0b000);
       lastStep = 0;
-      digitalWrite(pinHeart, HIGH);
       delay(2000);
     }
     return lastMode;
